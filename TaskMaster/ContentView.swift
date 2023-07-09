@@ -8,14 +8,29 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var isAddTaskViewPresented: Bool = false
+    @State private var isSettingsViewPresented: Bool = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            TasksListView()
+                .listStyle(.inset)
+                .navigationTitle("Tasks 📝")
+                .toolbar {
+                    ToolbarItem {
+                        Button(action: {
+                            isAddTaskViewPresented.toggle()
+                        }, label: {
+                            Text("ADD")
+                            Image(systemName: "plus")
+                        })
+                        .buttonStyle(.bordered)
+                    }
+                }
+                .navigationDestination(isPresented: $isAddTaskViewPresented) {
+                    AddTaskView()
+                }
         }
-        .padding()
     }
 }
 

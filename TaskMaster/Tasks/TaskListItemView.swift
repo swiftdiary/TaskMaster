@@ -8,11 +8,41 @@
 import SwiftUI
 
 struct TaskListItemView: View {
+    @Environment(\.modelContext) var context
+    let taskItem: TaskItem
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            Text(taskItem.title)
+                .font(.headline)
+            Spacer()
+            Text(taskItem.taskDescription ?? "No description")
+                .font(.caption)
+            Spacer()
+            Button {
+                markAsDone()
+            } label: {
+                if !taskItem.isCompleted {
+                    Image(systemName: "circle")
+                } else {
+                    Image(systemName: "checkmark.circle.fill")
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.white, .green)
+                }
+            }
+        }
+        .strikethrough(taskItem.isCompleted, color: .red)
+    }
+    
+    func markAsDone() {
+        withAnimation(.spring()) {
+            taskItem.isCompleted = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            context.delete(taskItem)
+        }
     }
 }
 
 #Preview {
-    TaskListItemView()
+    TaskListItemView(taskItem: TaskItem(title: "vvv"))
 }
